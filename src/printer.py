@@ -1,18 +1,28 @@
-from escpos.printer import Dummy
+import json
+from escpos.printer import CupsPrinter
 
 
-def print_to_printer():
+def print_template(printer_name, template_file, data):
+    printer = None
     try:
+        printer = CupsPrinter(printer_name)
+        printer.open()
 
-        printer = Dummy()
-        with open("../print.txt") as f:
-            for line in f:
-                printer.text(line)
+        with open(data, 'r', encoding='utf-8') as data_file:
+            receipt_data = json.load(data_file)
 
-            print(printer.output.decode("ascii"))
-            printer.clear()
+        with open(template_file, encoding="utf-8") as template:
+            receipt = template.read()
 
-    except Exception as e:
-        print(f"ERROR printing to thermal printer: {str(e)}")
+        text = receipt.format(**receipt_data)
+        printer.text(text)
+        printer.qr("test")
+        printer.cut()
 
-print_to_printer()
+    finally:
+        if printer:
+            printer.close()
+
+
+if __name__ == "__main__":
+    print_template("pos", "../print.txt", '../data.json')
