@@ -1,6 +1,8 @@
 {
-    "title": "TODO LIST",
-    "item": "Something",
-    "qty": 2,
-    "total": "$10.00"
+  "title": "SCORE RUN",
+  "date": "Wednesday, Jan 14",
+  "category": "ASSIGNMENTS",
+  "tasks": "BRAINSTORM CAPSTONE IDEAS   20\nOUTLINE PROJECT SCOPE      10",
+  "points": "30",
+  "deadline": "JAN 20"
 }
