@@ -1,4 +1,5 @@
 from llama_loader import llm
+import json
 
 prompt_file = 'prompt.txt'
 
@@ -10,9 +11,6 @@ text = resp["choices"][0]["text"]
 
 # Remove leading/trailing whitespace and newlines
 text = text.strip()
-
-# Optionally, parse JSON safely
-import json
 
 try:
     data = json.loads(text)
