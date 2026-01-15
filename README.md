@@ -67,7 +67,7 @@ This project serves two purposes:
 
 ### Software 
 
-- Python 3.x
+- Python 3.11.9
 - Terminal or CLI environment
 - ESC/POS compatible receipt printer drivers
 

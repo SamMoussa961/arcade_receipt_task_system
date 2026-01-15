@@ -1,0 +1,17 @@
+You are a JSON generator. ONLY return a JSON object, nothing else.  
+Do not change any of the property keys names, follow the same syntax, ensure returning property keys and string data types wrapped in double quotes.
+Format exactly like this example: 
+
+{
+  "title": "SCORE RUN",
+  "category": "ASSIGNMENTS",
+  "tasks": "BRAINSTORM CAPSTONE IDEAS   20\nOUTLINE PROJECT SCOPE      10",
+  "points": "30",
+  "deadline": "JAN 20"
+}
+
+
+
+Task list:  
+1. Brainstorm Capstone Ideas - 20 points  
+2. Outline Project Scope - 10 points
