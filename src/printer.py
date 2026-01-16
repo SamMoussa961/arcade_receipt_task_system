@@ -26,14 +26,7 @@ def print_template(printer_name=None):
         printer = printer_init(printer_name)
         if printer:
             
-            with open("data.json", 'r', encoding='utf-8') as data_file:
-                receipt_data = json.load(data_file)
-
-            title = receipt_data["title"]
-            category = receipt_data["category"]
-            tasks = receipt_data["tasks"]
-            points = receipt_data["points"]
-            deadline = receipt_data["deadline"]
+            
 
             print_header(printer, title)
             print_task_table(printer, tasks)
@@ -84,14 +77,13 @@ def print_empty_line(printer):
 
 def print_task_table(printer, _tasks):
     table_head = "  Task                                   |   Pts \n"
-    #tasks = map.Task(_tasks)
+     # print table header
+     # print table rows
 
-    printer.text(table_head)
-
-    for task in tasks:
-        spaces_available = 38 - len(task.name)
-        task_display = " [] " + task.name + (" " * spaces_available) + "    " + task.points + "  \n"
-        printer.text(task_display)
         
+def get_data(data = 'data.json'):
+    with open(data, 'r', encoding='utf-8') as data_file:
+        receipt_data = json.load(data_file)        
+    return receipt_data
 
-print_template('pos')
+get_data()
