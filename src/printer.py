@@ -1,13 +1,11 @@
 from datetime import date
 import json
 from escpos.printer import CupsPrinter, Dummy
+from PIL import Image, ImageDraw, ImageFont
 
 
 def print_template(data, printer_name=None):
     printer = None
-    primary_divider = "=" * 48
-    secondary_divider = "-" * 48
-    body = ''
     try:
         if printer_name:
             printer = CupsPrinter(printer_name)
@@ -27,25 +25,29 @@ def print_template(data, printer_name=None):
         points = receipt_data["points"]
         deadline = receipt_data["deadline"]
 
-        _date = date.today().strftime("%A, %d %M")
+        _date = date.today().strftime("%A, %dth %b")
 
-        body += primary_divider + '\n'
-        body += title + '\n'
-        body += secondary_divider + '\n'
-        body += _date + '\n'
-        body += secondary_divider + '\n'
-        body += category + '\n'
-        body += secondary_divider + '\n'
-        body += tasks + '\n'
-        body += ("deadline: " + deadline) + '\n'
-        body += secondary_divider + '\n'
-        body += ("Possible Score: " + points) + '\n'
-        body += secondary_divider + '\n'
-        body += "Good Luck" + '\n'
-        body += primary_divider + '\n'
+        printer.set_with_default(align="center", width=1, height=1)
 
-        printer.text(body)
-        printer.qr("test")
+        # Header section: divider, title divider
+        print_divider(printer)
+        print_empty_line(printer)
+        print_title(printer, title)
+        print_empty_line(printer)
+        print_divider(printer)
+        
+        # date section:
+        print_empty_line(printer)
+        print_text(printer, _date)
+        print_empty_line(printer)
+        print_divider(printer, "^")
+
+        
+        # Category section:
+        
+
+        
+        
         printer.cut()
 
     finally:
@@ -53,5 +55,28 @@ def print_template(data, printer_name=None):
             printer.close()
 
 
+
+def print_divider(printer, shape: str = "*"):
+    divider = shape * 48
+    printer.set(bold=True)
+    printer.text(divider)
+
+def print_title(printer, title:str):
+    printer.set(align="center", bold=True, double_width=True, double_height=True)
+    printer.text(title + '\n')
+
+def print_empty_line(printer):
+    printer.set_with_default()
+    printer.text(" "*48)
+
+def print_text(printer, title:str):
+    printer.set(align="center")
+    printer.text(title + '\n')
+
+def print_art(printer, _file):
+    with open(_file, 'r', encoding='cp437') as design:
+            art = design.read()
+            printer.text(art)
+
 if __name__ == "__main__":
-    print_template('../data.json')
+    print_template('data.json', 'pos')
