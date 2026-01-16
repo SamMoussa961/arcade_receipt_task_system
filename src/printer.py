@@ -1,10 +1,9 @@
 from datetime import date
 import json
 from escpos.printer import CupsPrinter, Dummy
-from PIL import Image, ImageDraw, ImageFont
 
 
-def print_template(data, printer_name=None):
+def printer_init(printer_name=None):
     printer = None
     try:
         if printer_name:
@@ -12,71 +11,72 @@ def print_template(data, printer_name=None):
         else:
             printer = Dummy()
 
-        #profile = printer.profile()
-
         printer.open()
-
-        with open(data, 'r', encoding='utf-8') as data_file:
-            receipt_data = json.load(data_file)
-
-        title = receipt_data["title"]
-        category = receipt_data["category"]
-        tasks = receipt_data["tasks"]
-        points = receipt_data["points"]
-        deadline = receipt_data["deadline"]
-
-        _date = date.today().strftime("%A, %dth %b")
-
         printer.set_with_default(align="center", width=1, height=1)
+        return printer
+    except Exception as e:
+        raise e
 
-        # Header section: divider, title divider
-        print_divider(printer)
-        print_empty_line(printer)
-        print_title(printer, title)
-        print_empty_line(printer)
-        print_divider(printer)
-        
-        # date section:
-        print_empty_line(printer)
-        print_text(printer, _date)
-        print_empty_line(printer)
-        print_divider(printer, "^")
 
-        
-        # Category section:
-        
+def print_template(data, printer_name=None):
+    printer = None
+    
+    try:
+        printer = printer_init(printer_name)
+        if printer:
+            
+            with open(data, 'r', encoding='utf-8') as data_file:
+                receipt_data = json.load(data_file)
 
-        
-        
-        printer.cut()
+            title = receipt_data["title"]
+            category = receipt_data["category"]
+            tasks = receipt_data["tasks"]
+            points = receipt_data["points"]
+            deadline = receipt_data["deadline"]
+
+            print_header(printer, title)
+ 
+            
+    except Exception as e:
+        raise e
 
     finally:
         if printer:
+            printer.cut()
             printer.close()
 
+def print_header(printer, title):
+    ASSIGNMENTS = "█▌     ASSIGNMENTS    ▐█"
+    MAINTENANCE = "█▌     MAINTENANCE    ▐█"
+    WELLNESS =    "█▌       WELLNESS     ▐█"
+    ERRANDS =     "█▌       ERRANDS      ▐█"
+    FOCUS =       "█▌        FOCUS       ▐█"
+    TOP_BORDER = "████████████████████████\n█▌                    ▐█\n"
+    BOTTOM_BORDER = "█▌                    ▐█\n████████████████████████"
 
-
-def print_divider(printer, shape: str = "*"):
-    divider = shape * 48
-    printer.set(bold=True)
-    printer.text(divider)
-
-def print_title(printer, title:str):
+    values = {
+        "assignments": ASSIGNMENTS,
+        "maintenance": MAINTENANCE,
+        "wellness": WELLNESS,
+        "errands": ERRANDS,
+        "focus": FOCUS
+    }
+    
+    result = values.get(title)
+    
+    print_empty_line(printer)
     printer.set(align="center", bold=True, double_width=True, double_height=True)
-    printer.text(title + '\n')
+    printer.text(TOP_BORDER)
+    printer.text(result + "\n")
+    printer.text(BOTTOM_BORDER)
+    print_empty_line(printer)
+    printer.set(align="center", bold=False, double_width=True, double_height=True)
+    printer.text(date.today().strftime("%A, %dth %b") + "\n")
+    print_empty_line(printer)
+
 
 def print_empty_line(printer):
     printer.set_with_default()
     printer.text(" "*48)
 
-def print_text(printer, title:str):
-    printer.set(align="center")
-    printer.text(title + '\n')
 
-def print_art(printer, _file):
-    with open(_file, 'r', encoding='cp437') as design:
-            art = design.read()
-            printer.text(art)
-
-if __name__ == "__main__":
-    print_template('data.json', 'pos')
