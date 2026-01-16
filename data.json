@@ -2,7 +2,16 @@
   "title": "SCORE RUN",
   "date": "Wednesday, Jan 14",
   "category": "ASSIGNMENTS",
-  "tasks": "BRAINSTORM CAPSTONE IDEAS   20\nOUTLINE PROJECT SCOPE      10",
+  "tasks": [
+    {
+      "name": "BRAINSTORM CAPSTONE IDEAS",
+      "points": 20
+    },
+    {
+      "name": "OUTLINE PROJECT SCOPE",
+      "points": 10
+    }
+],
   "points": "30",
   "deadline": "JAN 20"
 }

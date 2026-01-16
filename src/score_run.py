@@ -1,4 +1,4 @@
-from printer import printer_init, print_header
+from printer import printer_init, print_template
 
 def speed_run_wrapper(printer_name, function):
     TOP_ART = "(             )   (          (              ) \n )\ )   (   ( /(   )\ )       )\ )        ( /( \n(()/(   )\  )\()) (()/( (    (()/(    (   )\())\n /(_))(((_)((_)\   /(_)))\    /(_))   )\ ((_)\ \n(_))  )\___  ((_) (_)) ((_)  (_))  _ ((_) _((_)\n/ __|((/ __|/ _ \ | _ \| __| | _ \| | | || \| |\n\__ \ | (__| (_) ||   /| _|  |   /| |_| || .` |\n|___/  \___|\___/ |_|_\|___| |_|_\ \___/ |_|\_|\n"
@@ -17,4 +17,4 @@ def speed_run_wrapper(printer_name, function):
     except Exception as e:
         raise e
 
-speed_run_wrapper('pos', print_header)
+speed_run_wrapper('pos', print_template)

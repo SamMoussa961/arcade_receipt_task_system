@@ -1,6 +1,7 @@
 from datetime import date
 import json
 from escpos.printer import CupsPrinter, Dummy
+from objects.task import Task
 
 
 def printer_init(printer_name=None):
@@ -18,14 +19,14 @@ def printer_init(printer_name=None):
         raise e
 
 
-def print_template(data, printer_name=None):
+def print_template(printer_name=None):
     printer = None
     
     try:
         printer = printer_init(printer_name)
         if printer:
             
-            with open(data, 'r', encoding='utf-8') as data_file:
+            with open("data.json", 'r', encoding='utf-8') as data_file:
                 receipt_data = json.load(data_file)
 
             title = receipt_data["title"]
@@ -35,6 +36,7 @@ def print_template(data, printer_name=None):
             deadline = receipt_data["deadline"]
 
             print_header(printer, title)
+            print_task_table(printer, tasks)
  
             
     except Exception as e:
@@ -67,7 +69,8 @@ def print_header(printer, title):
     print_empty_line(printer)
     printer.set(align="center", bold=True, double_width=True, double_height=True)
     printer.text(TOP_BORDER)
-    printer.text(result + "\n")
+    printer.text(result)
+    printer.text("\n")
     printer.text(BOTTOM_BORDER)
     print_empty_line(printer)
     printer.set(align="center", bold=False, double_width=True, double_height=True)
@@ -79,4 +82,16 @@ def print_empty_line(printer):
     printer.set_with_default()
     printer.text(" "*48)
 
+def print_task_table(printer, _tasks):
+    table_head = "  Task                                   |   Pts \n"
+    #tasks = map.Task(_tasks)
 
+    printer.text(table_head)
+
+    for task in tasks:
+        spaces_available = 38 - len(task.name)
+        task_display = " [] " + task.name + (" " * spaces_available) + "    " + task.points + "  \n"
+        printer.text(task_display)
+        
+
+print_template('pos')
