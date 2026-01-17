@@ -4,11 +4,11 @@ from llama_cpp import Llama
 
 load_dotenv()
 
-MODEL_PATH = os.getenv("MODEL_PATH")
-MAX_CONTEXT = int(os.getenv("MAX_CONTEXT", 1024))
-BATCH_SIZE = int(os.getenv("BATCH_SIZE", 512))
+MODEL_PATH = os.getenv("MODEL_PATH", "./models/Qwen2.5-7B-Instruct-GGUF")
+MAX_CONTEXT = int(os.getenv("MAX_CONTEXT", 3072))
+BATCH_SIZE = int(os.getenv("BATCH_SIZE", 384))
 
-n_gpu_layers = -1
+n_gpu_layers = int(os.getenv("N_GPU_LAYERS", 22))
 
 print(f"Initializing model with GPU offload hint n_gpu_layers={n_gpu_layers}")
 

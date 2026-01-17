@@ -1,0 +1,16 @@
+Task list:
+1. Clean bedroom before end of day
+2. Do 10 minutes workout tomorrow
+3. Complete project outline
+4. Grocery shopping
+5. 30 minutes focused study
+
+Example format:
+{
+  "category": "ASSIGNMENTS",
+  "tasks": [
+    {"name": "BRAINSTORM IDEAS", "points": 20},
+    {"name": "OUTLINE PROJECT SCOPE", "points": 10}
+  ],
+  "deadline": "JAN 20"
+}

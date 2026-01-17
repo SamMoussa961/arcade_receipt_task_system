@@ -30,11 +30,9 @@ def print_template(printer_name=None, printer = None):
         
         project = get_data()
         print_header(printer, project.category)
-        print_task_table(printer, project.tasks)
-    except Exception:
-        if printer:
-            printer.cut()
-        raise 
+        print_task_table(printer, project)
+    except Exception as e:
+        raise e
     finally:
         if owns_printer and printer:
             printer.cut()
@@ -80,20 +78,21 @@ def print_divider(printer, filler = " "):
     printer.text(f"{filler * 48}\n")
 
 
-def print_task_table(printer, tasks):
+def print_task_table(printer, project):
     table_head = "  Tasks                                 |  Pts  \n"
 
      # print table header
     printer.text(table_head)
     print_divider(printer, "-")
 
-    for task in tasks:
+    for task in project.tasks:
         # print table rows
         row = f" [ ] {task.name.ljust(37)} +{task.points}  \n"
         printer.text(row)
     
-    print_divider(printer)
-    print_divider(printer, "*")
+    print_divider(printer, "=")
+    printer.text(f" Deadline: {project.deadline} \n".rjust(48))
+    print_divider(printer, "=")
     print_divider(printer)
 
         
@@ -109,3 +108,4 @@ def get_data(data = 'data.json'):
 
     return project
 
+print_template("pos1")

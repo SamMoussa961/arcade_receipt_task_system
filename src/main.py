@@ -1,22 +1,39 @@
-from llama_loader import llm
+import re
 import json
+from llama_loader import llm
 
-prompt_file = 'prompt.txt'
+user_prompt_file = "user_prompt.txt"
+system_prompt_file = "system_prompt.txt"
 
-with open(prompt_file, encoding="utf-8") as template:
-            prompt = template.read()
+with open(user_prompt_file, encoding="utf-8") as f:
+    user_prompt = f.read()
 
-resp = llm(prompt, max_tokens=200)
-text = resp["choices"][0]["text"]
+with open(system_prompt_file, encoding="utf-8") as f:
+    system_prompt = f.read()
 
-# Remove leading/trailing whitespace and newlines
-text = text.strip()
+resp = llm.create_chat_completion(
+    messages=[
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt}
+    ],
+    max_tokens=500,
+    temperature=0.3,
+    top_p=0.85,
+    repeat_penalty=1.15
+)
 
-try:
-    data = json.loads(text)
-except json.JSONDecodeError:
-    print("Output is not valid JSON. Raw text:", text)
-    data = None
+text = resp["choices"][0]["message"]["content"].strip()
 
-print(data)
+# Regex to extract all JSON objects
+matches = re.findall(r'\{.*?\}', text, re.DOTALL)
+data = []
 
+for m in matches:
+    try:
+        data.append(json.loads(m))
+    except json.JSONDecodeError:
+        print("Failed to parse JSON object:")
+        print(m)
+
+for category_obj in data:
+    print(json.dumps(category_obj, indent=2))
