@@ -1,6 +1,7 @@
-from datetime import date
 import json
+from datetime import date
 from escpos.printer import CupsPrinter, Dummy
+from objects.project import Project
 from objects.task import Task
 
 
@@ -9,6 +10,8 @@ def printer_init(printer_name=None):
     try:
         if printer_name:
             printer = CupsPrinter(printer_name)
+            printer._raw(b'\x1c\x2e')      # Cancel Chinese mode
+            #printer._raw(b'\x1b\x74\x00')  # CP437
         else:
             printer = Dummy()
 
@@ -19,28 +22,27 @@ def printer_init(printer_name=None):
         raise e
 
 
-def print_template(printer_name=None):
-    printer = None
-    
+def print_template(printer_name=None, printer = None):
+    owns_printer = printer is None
     try:
-        printer = printer_init(printer_name)
-        if printer:
-            
-            
-
-            print_header(printer, title)
-            print_task_table(printer, tasks)
- 
-            
-    except Exception as e:
-        raise e
-
-    finally:
+        if owns_printer:
+            printer = printer_init(printer_name)
+        
+        project = get_data()
+        print_header(printer, project.category)
+        print_task_table(printer, project.tasks)
+    except Exception:
         if printer:
             printer.cut()
+        raise 
+    finally:
+        if owns_printer and printer:
+            printer.cut()
             printer.close()
+        return project.total_points
 
-def print_header(printer, title):
+
+def print_header(printer, category):
     ASSIGNMENTS = "█▌     ASSIGNMENTS    ▐█"
     MAINTENANCE = "█▌     MAINTENANCE    ▐█"
     WELLNESS =    "█▌       WELLNESS     ▐█"
@@ -57,33 +59,53 @@ def print_header(printer, title):
         "focus": FOCUS
     }
     
-    result = values.get(title)
+    result = values.get(category)
     
-    print_empty_line(printer)
+    print_divider(printer)
     printer.set(align="center", bold=True, double_width=True, double_height=True)
     printer.text(TOP_BORDER)
     printer.text(result)
     printer.text("\n")
     printer.text(BOTTOM_BORDER)
-    print_empty_line(printer)
+    print_divider(printer)
     printer.set(align="center", bold=False, double_width=True, double_height=True)
     printer.text(date.today().strftime("%A, %dth %b") + "\n")
-    print_empty_line(printer)
+    print_divider(printer)
+    print_divider(printer, "*")
+    print_divider(printer)
 
 
-def print_empty_line(printer):
+def print_divider(printer, filler = " "):
     printer.set_with_default()
-    printer.text(" "*48)
+    printer.text(f"{filler * 48}\n")
 
-def print_task_table(printer, _tasks):
-    table_head = "  Task                                   |   Pts \n"
+
+def print_task_table(printer, tasks):
+    table_head = "  Tasks                                 |  Pts  \n"
+
      # print table header
-     # print table rows
+    printer.text(table_head)
+    print_divider(printer, "-")
+
+    for task in tasks:
+        # print table rows
+        row = f" [ ] {task.name.ljust(37)} +{task.points}  \n"
+        printer.text(row)
+    
+    print_divider(printer)
+    print_divider(printer, "*")
+    print_divider(printer)
 
         
 def get_data(data = 'data.json'):
     with open(data, 'r', encoding='utf-8') as data_file:
-        receipt_data = json.load(data_file)        
-    return receipt_data
+        raw = json.load(data_file)        
+    
+    project = Project(
+        category = raw["category"],
+        tasks = [Task(**task) for task in raw["tasks"]],
+        deadline = raw["deadline"]
+    )
 
-get_data()
+    return project
+

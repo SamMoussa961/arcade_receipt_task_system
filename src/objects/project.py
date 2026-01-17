@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 from typing import List
-from task import Task
+from objects.task import Task
 
 @dataclass
 class Project:
-    title: str
     category: str
     tasks: List[Task]
     deadline: str
