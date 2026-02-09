@@ -1,16 +1,15 @@
-Task list:
-1. Clean bedroom before end of day
-2. Do 10 minutes workout tomorrow
-3. Complete project outline
-4. Grocery shopping
-5. 30 minutes focused study
+Current date: February 6, 2026
 
-Example format:
-{
-  "category": "ASSIGNMENTS",
-  "tasks": [
-    {"name": "BRAINSTORM IDEAS", "points": 20},
-    {"name": "OUTLINE PROJECT SCOPE", "points": 10}
-  ],
-  "deadline": "JAN 20"
-}
+Tasks to process:
+1. Clean bedroom before end of day (estimated: 30 minutes)
+2. Do 10 minutes workout tomorrow
+3. Complete project outline (estimated: 1 hour)
+4. Grocery shopping (estimated: 15 minutes)
+5. 30 minutes focused study
+6. draft arcade game project structure (estimated: 1 hour)
+7. go for a 15 minutes run tomorrow
+8. database reading, must be done before monday
+9. lab 3 for cloud tech is due wednesday
+10. complete ERD for deliverable 2 database project
+
+Convert these into a gamified task structure.
