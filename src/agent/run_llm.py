@@ -1,10 +1,12 @@
-import re
-import json
-from src.agent.llm_backend import get_llm
-from datetime import datetime
+import os
+import requests
+import time
+from dotenv import load_dotenv
+
+load_dotenv()
 
 user_prompt_file = "user_prompt.txt"
-system_prompt_file = "system_prompt.txt"
+system_prompt_file = os.getenv("")
 
 with open(user_prompt_file, encoding="utf-8") as f:
     user_prompt = f.read()
