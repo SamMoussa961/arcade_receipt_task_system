@@ -2,8 +2,17 @@ import os
 import requests
 import time
 from dotenv import load_dotenv
+from pathlib import Path
 
 load_dotenv()
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+AGENT_URL = os.getenv("AGENT_URL")
+MODEL = os.getenv("AGENT_MODEL")
+CONFIG_DIR = BASE_DIR / "config"
+INPUT_DIR = BASE_DIR / "input"
+SYSTEM_PROMPT_FILE = CONFIG_DIR / "system_prompt.txt"
+
 
 user_prompt_file = "user_prompt.txt"
 system_prompt_file = os.getenv("")
@@ -11,25 +20,21 @@ system_prompt_file = os.getenv("")
 with open(user_prompt_file, encoding="utf-8") as f:
     user_prompt = f.read()
 
-with open(system_prompt_file, encoding="utf-8") as f:
-    system_prompt = f.read()
+with open(SYSTEM_PROMPT_FILE, encoding="utf-8") as f:
+    SYSTEM_PROMPT = f.read()
 
-current_date = datetime.now().strftime("%B %d, %Y")
-if "current date" not in user_prompt.lower():
-    user_prompt = f"Current date: {current_date}\n\n{user_prompt}"
-
-llm = get_llm()
-
-resp = llm.create_chat_completion(
-    messages=[
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": user_prompt}
-    ],
-    max_tokens=1000,
-    temperature=0.2,
-    top_p=0.9,
-    repeat_penalty=1.1
-)
+def ask_agent():
+    resp = requests.post(URL, json={
+        "model": MODEL,
+        "messages": [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": user_prompt}
+        ],
+        max_tokens=1000,
+        temperature=0.2,
+        top_p=0.9,
+        repeat_penalty=1.1
+    )
 
 text = resp["choices"][0]["message"]["content"].strip()
 
