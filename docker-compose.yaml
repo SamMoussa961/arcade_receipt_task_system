@@ -1,0 +1,17 @@
+services:
+  arcade-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: arcade_backend_api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - arcade_data:/app/data
+    command: /app/.venv/bin/uvicorn src.api.app:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  arcade_data:

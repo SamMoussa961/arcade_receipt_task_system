@@ -1,4 +1,4 @@
-from db_tools.db import initialize_db, get_connection
+from src.db_tools.db import initialize_db, get_connection
 
 initialize_db()
 
